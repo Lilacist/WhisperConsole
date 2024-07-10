@@ -444,7 +444,7 @@ static void whisper_batch_free(struct whisper_batch batch) {
     if (batch.token)    free(batch.token);
     if (batch.pos)      free(batch.pos);
     if (batch.n_seq_id) free(batch.n_seq_id);
-    if (batch.seq_id) {
+    if (batch.seq_id!=NULL&&*batch.seq_id!=NULL) {
         for (int i = 0; batch.seq_id[i]; ++i) {
             free(batch.seq_id[i]);
         }
@@ -842,7 +842,7 @@ struct whisper_state {
     int64_t t_beg = 0;
     int64_t t_last = 0;
 
-    whisper_token tid_last;
+    whisper_token tid_last = 0;
 
     std::vector<float> energy; // PCM signal energy
 
@@ -4587,7 +4587,7 @@ static std::vector<whisper_grammar_candidate> whisper_grammar_reject_candidates_
     std::vector<whisper_grammar_candidate> rejects;
 
     if (stack.empty()) {
-        for (auto tok : candidates) {
+        for (auto& tok : candidates) {
             if (*tok.code_points != 0 || tok.partial_utf8.n_remain != 0) {
                 rejects.push_back(tok);
             }
@@ -4598,7 +4598,7 @@ static std::vector<whisper_grammar_candidate> whisper_grammar_reject_candidates_
     const whisper_grammar_element* stack_pos = stack.back();
 
     std::vector<whisper_grammar_candidate> next_candidates;
-    for (auto tok : candidates) {
+    for (auto& tok : candidates) {
         if (*tok.code_points == 0) {
             // reached end of full codepoints in token, reject iff it ended in a partial sequence
             // that cannot satisfy this position in grammar
@@ -4625,7 +4625,7 @@ static std::vector<whisper_grammar_candidate> whisper_grammar_reject_candidates_
     whisper_grammar_advance_stack(rules, stack_after, next_stacks);
 
     auto next_rejects = whisper_grammar_reject_candidates(rules, next_stacks, next_candidates);
-    for (auto tok : next_rejects) {
+    for (auto& tok : next_rejects) {
         rejects.push_back({ tok.id, tok.code_points - 1, tok.partial_utf8 });
     }
 

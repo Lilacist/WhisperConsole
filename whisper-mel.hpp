@@ -15,8 +15,8 @@ void whisper_mel_init(whisper_mel & mel, ggml_backend_t backend, int n_len, int 
 void whisper_mel_free(whisper_mel & mel);
 
 struct whisper_filters {
-    int32_t n_mel;
-    int32_t n_fft;
+    int32_t n_mel = 0;
+    int32_t n_fft = 0;
 
     std::vector<float> data;
 };
