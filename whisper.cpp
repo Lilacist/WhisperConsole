@@ -382,8 +382,6 @@ struct whisper_vocab {
 
     std::map<token, id> token_to_id;
     std::map<id, token> id_to_token;
-
-    // reference: https://github.com/openai/whisper/blob/248b6cb124225dd263bb9bd32d060b6517e067f8/whisper/tokenizer.py#L334-L349
     id token_eot = 50256;
     id token_sot = 50257;
     // task tokens (used only for multilingual models)
